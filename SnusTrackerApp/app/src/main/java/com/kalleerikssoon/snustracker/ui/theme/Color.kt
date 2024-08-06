@@ -2,10 +2,13 @@ package com.kalleerikssoon.snustracker.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
-
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val NavyBlue = Color(0xFF07417E)
+val LightBlue = Color(0xFF87CEEB)
+val BlueGray = Color(0xFF6699CC)
+val SkyBlue = Color(0xFF87CEFA)
+val BackgroundWhite = Color(0xFFFFFFFF)
+val SurfaceWhite = Color(0xFFFFFFFF)
+val OnPrimaryWhite = Color(0xFFFFFFFF)
+val OnSecondaryWhite = Color(0xFFFFFFFF)
+val OnBackgroundBlack = Color(0xFF1C1B1F)
+val OnSurfaceBlack = Color(0xFF1C1B1F)
