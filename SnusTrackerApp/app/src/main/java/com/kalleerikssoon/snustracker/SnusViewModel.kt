@@ -4,17 +4,18 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.kalleerikssoon.snustracker.database.SnusEntry
+import com.kalleerikssoon.snustracker.database.SnusRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/**
- * ViewModel class for managing SnusEntry data.
- * Interacts with the repository to perform database operations and provides data to the UI.
- */
-class SnusViewModel(application: Application, private val repository: SnusRepository) : AndroidViewModel(application) {
+class SnusViewModel(
+    application: Application,
+    private val repository: SnusRepository,
+    private val locationHandler: LocationHandler
+) : AndroidViewModel(application) {
 
-    private val allEntries: LiveData<List<SnusEntry>> = repository.allEntries
     val todayEntries: LiveData<List<SnusEntry>> = repository.getEntriesForToday()
 
     // Function to get snus entries for the current week
@@ -26,7 +27,19 @@ class SnusViewModel(application: Application, private val repository: SnusReposi
     // Function to get snus entries for the current year
     fun getEntriesForYear(): LiveData<List<SnusEntry>> = repository.getEntriesForYear()
 
-    // Function to insert a snus entry into the database
+    // Function to insert a snus entry into the database with location handling
+    fun insertSnusEntryWithLocation(entry: SnusEntry) {
+        if (locationHandler.hasLocationPermission()) {
+            locationHandler.getCurrentLocation { latitude, longitude ->
+                insert(entry.copy(latitude = latitude, longitude = longitude))
+            }
+        } else {
+            locationHandler.requestLocationPermission()
+            insert(entry) // Insert with default location if permission is not granted
+        }
+    }
+
+    // Internal function to insert the entry into the database
     fun insert(entry: SnusEntry) = viewModelScope.launch(Dispatchers.IO) {
         repository.insert(entry)
         withContext(Dispatchers.Main) {
@@ -44,7 +57,7 @@ class SnusViewModel(application: Application, private val repository: SnusReposi
 
     // Function to log current entries in the database
     private fun logCurrentEntries(operation: String) {
-        allEntries.observeForever { entries ->
+        todayEntries.observeForever { entries ->
             println("$operation - Current Entries: $entries")
         }
     }

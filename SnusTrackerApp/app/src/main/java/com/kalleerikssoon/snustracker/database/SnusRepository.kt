@@ -1,4 +1,4 @@
-package com.kalleerikssoon.snustracker
+package com.kalleerikssoon.snustracker.database
 
 import android.util.Log
 import androidx.lifecycle.LiveData

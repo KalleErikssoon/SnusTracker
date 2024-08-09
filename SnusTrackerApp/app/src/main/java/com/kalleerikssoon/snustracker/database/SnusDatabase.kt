@@ -1,4 +1,4 @@
-package com.kalleerikssoon.snustracker
+package com.kalleerikssoon.snustracker.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 

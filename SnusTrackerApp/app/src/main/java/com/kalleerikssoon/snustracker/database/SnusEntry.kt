@@ -1,4 +1,4 @@
-package com.kalleerikssoon.snustracker
+package com.kalleerikssoon.snustracker.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -11,5 +11,6 @@ import androidx.room.PrimaryKey
 data class SnusEntry(
     @PrimaryKey(autoGenerate = true) val id: Int,
     val timestamp: Long,
-    val location: String?
+    val latitude: Double,
+    val longitude: Double
 )
