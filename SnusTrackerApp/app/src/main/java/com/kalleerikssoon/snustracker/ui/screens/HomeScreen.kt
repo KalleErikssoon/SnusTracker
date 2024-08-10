@@ -1,92 +1,32 @@
 // MainScreen.kt
 package com.kalleerikssoon.snustracker.ui.screens
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.kalleerikssoon.snustracker.MainActivity
+import androidx.navigation.NavHostController
 import com.kalleerikssoon.snustracker.R
+import com.kalleerikssoon.snustracker.Screen
 import com.kalleerikssoon.snustracker.SnusViewModel
 import com.kalleerikssoon.snustracker.database.SnusEntry
-import kotlinx.coroutines.launch
+import com.kalleerikssoon.snustracker.ui.components.BottomNavigationBar
 
 @Composable
-fun HomeScreen(viewModel: SnusViewModel) {
-    val context = LocalContext.current as MainActivity
-    val coroutineScope = rememberCoroutineScope()
-
+fun HomeScreen(viewModel: SnusViewModel, navController: NavHostController) {
     val todayEntries by viewModel.todayEntries.observeAsState(emptyList())
 
     Scaffold(
-        bottomBar = {
-            BottomAppBar(
-                tonalElevation = 10.dp
-            ) {
-                NavigationBar {
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Default.LocationOn,
-                                contentDescription = "Map View"
-                            )
-                        },
-                        label = { Text("Map View") },
-                        selected = false,
-                        onClick = {
-                            coroutineScope.launch {
-                                Toast.makeText(context, "Map View Clicked", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    )
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Default.List,
-                                contentDescription = "Statistics"
-                            )
-                        },
-                        label = { Text("Statistics") },
-                        selected = false,
-                        onClick = {
-                            coroutineScope.launch {
-                                Toast.makeText(context, "Statistics Clicked", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    )
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Default.Settings,
-                                contentDescription = "Settings"
-                            )
-                        },
-                        label = { Text("Settings") },
-                        selected = false,
-                        onClick = {
-                            coroutineScope.launch {
-                                Toast.makeText(context, "Settings Clicked", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    )
-                }
-            }
-        },
+        bottomBar = { BottomNavigationBar(navController = navController, currentScreen = Screen.Home) },
         floatingActionButton = {
             Row(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -98,9 +38,6 @@ fun HomeScreen(viewModel: SnusViewModel) {
                         if (todayEntries.isNotEmpty()) {
                             val latestEntry = todayEntries[0]
                             viewModel.delete(latestEntry)
-                            coroutineScope.launch {
-                                Toast.makeText(context, "Snus Removed", Toast.LENGTH_SHORT).show()
-                            }
                         }
                     }
                 ) {
@@ -154,3 +91,4 @@ fun HomeScreen(viewModel: SnusViewModel) {
         }
     }
 }
+

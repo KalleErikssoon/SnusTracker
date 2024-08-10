@@ -1,14 +1,14 @@
 package com.kalleerikssoon.snustracker
 
+import SetupNavGraph
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.lifecycle.ViewModelProvider
-import com.kalleerikssoon.snustracker.ui.screens.HomeScreen
+import androidx.navigation.compose.rememberNavController
 import com.kalleerikssoon.snustracker.ui.theme.SnusTrackerTheme
 
 class MainActivity : ComponentActivity() {
-
 
     private val viewModel: SnusViewModel by lazy {
         ViewModelProvider(
@@ -21,10 +21,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             SnusTrackerTheme {
-                HomeScreen(viewModel) // Pass the viewModel to HomeScreen
+                val navController = rememberNavController() // Initialize NavController
+
+                SetupNavGraph(navController = navController, viewModel = viewModel) // Set up the NavGraph
             }
         }
     }
 }
-
-
