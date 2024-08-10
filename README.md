@@ -11,7 +11,7 @@ SnusTracker is an Android application designed to help users monitor and manage 
 * Add Snus: Quickly log a new snus consumption.
 * Filter Options: Filter your statistics by different time periods to get specific insights.
 * Map View: Switch to a map view to see geotagged entries of your snus consumption.
-* Statistics: Access detailed graphs and statistics on your snus usage.
+* Statistics: Access detailed information about your consumtion and estimated/actual averages of consumption and cost.
 * Settings: Adjust your preferences and settings within the app.
 
 ### Requirements
