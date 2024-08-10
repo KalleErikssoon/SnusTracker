@@ -78,7 +78,7 @@ fun HomeScreen(viewModel: SnusViewModel, navController: NavHostController) {
             ) {
                 Text(
                     text = "Amount of snus today: ${todayEntries.size}",
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(bottom = 25.dp)
                 )
                 val imageSize = 200.dp

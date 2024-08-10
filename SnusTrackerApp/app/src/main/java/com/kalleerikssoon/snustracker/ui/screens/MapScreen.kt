@@ -16,7 +16,6 @@ fun MapScreen(viewModel: SnusViewModel, navController: NavHostController) {
     Scaffold(
         bottomBar = { BottomNavigationBar(navController = navController, currentScreen = Screen.MapView) }
     ) { paddingValues ->
-        // You can use the paddingValues if you need to apply padding to your content
         Text(
             text = "Map Screen",
             style = MaterialTheme.typography.headlineSmall,

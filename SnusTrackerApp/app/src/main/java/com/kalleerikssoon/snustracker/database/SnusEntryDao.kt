@@ -31,18 +31,22 @@ interface SnusEntryDao {
 
     // Retrieves snus entries for the current week
     @Query("""
-        SELECT * FROM snus_table 
-        WHERE timestamp >= date('now', 'weekday 0', '-7 days')
-    """)
+    SELECT * FROM snus_table 
+    WHERE date(timestamp / 1000, 'unixepoch') >= date('now', 'weekday 0', '-7 days')
+""")
     fun getEntriesForWeek(): LiveData<List<SnusEntry>>
-
     // retrieves snus entries for the current month
     // Uses strftime function to filter entries for the current year and month.
-    @Query("SELECT * FROM snus_table WHERE strftime('%Y-%m', timestamp) = strftime('%Y-%m', 'now')")
+    @Query("""
+    SELECT * FROM snus_table 
+    WHERE strftime('%Y-%m', timestamp / 1000, 'unixepoch') = strftime('%Y-%m', 'now')
+""")
     fun getEntriesForMonth(): LiveData<List<SnusEntry>>
-
     // Retrieves snus entries for the current year
     //Uses strftime function to filter entries for the current year.
-    @Query("SELECT * FROM snus_table WHERE strftime('%Y', timestamp) = strftime('%Y', 'now')")
+    @Query("""
+    SELECT * FROM snus_table 
+    WHERE strftime('%Y', timestamp / 1000, 'unixepoch') = strftime('%Y', 'now')
+""")
     fun getEntriesForYear(): LiveData<List<SnusEntry>>
 }

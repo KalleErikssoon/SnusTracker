@@ -18,6 +18,9 @@ class SnusViewModel(
 
     val todayEntries: LiveData<List<SnusEntry>> = repository.getEntriesForToday()
 
+    private val averageCostPerPackage = 30.0 // Cost of one snus package in the local currency
+    private val portionsPerPackage = 22 // Average portions per package
+
     // Function to get snus entries for the current week
     fun getEntriesForWeek(): LiveData<List<SnusEntry>> = repository.getEntriesForWeek()
 
@@ -26,6 +29,7 @@ class SnusViewModel(
 
     // Function to get snus entries for the current year
     fun getEntriesForYear(): LiveData<List<SnusEntry>> = repository.getEntriesForYear()
+    fun getAllEntries(): LiveData<List<SnusEntry>> = repository.allEntries
 
     // Function to insert a snus entry into the database with location handling
     fun insertSnusEntryWithLocation(entry: SnusEntry) {
@@ -61,4 +65,57 @@ class SnusViewModel(
             println("$operation - Current Entries: $entries")
         }
     }
+    fun getMonthlyAverage(entries: List<SnusEntry>): Pair<Boolean, Float> {
+        if (entries.isEmpty()) return Pair(true, 0f)
+
+        val firstEntryDate = entries.minOfOrNull { it.timestamp } ?: return Pair(true, 0f)
+        val lastEntryDate = entries.maxOfOrNull { it.timestamp } ?: return Pair(true, 0f)
+
+        val daysLogged = (lastEntryDate - firstEntryDate) / (1000 * 60 * 60 * 24) + 1
+        val averagePerDay = entries.size.toFloat() / daysLogged.toFloat()
+
+        return if (daysLogged >= 30) {
+            Pair(true, averagePerDay * 30)
+        } else {
+            Pair(false, averagePerDay * 30)
+        }
+    }
+
+    //get yearly snus entries
+    fun getYearlyAverage(entries: List<SnusEntry>): Pair<Boolean, Float> {
+        if (entries.isEmpty()) return Pair(true, 0f)
+
+        val firstEntryDate = entries.minOfOrNull { it.timestamp } ?: return Pair(true, 0f)
+        val lastEntryDate = entries.maxOfOrNull { it.timestamp } ?: return Pair(true, 0f)
+
+        val daysLogged = (lastEntryDate - firstEntryDate) / (1000 * 60 * 60 * 24) + 1
+        val averagePerDay = entries.size.toFloat() / daysLogged.toFloat()
+
+        return if (daysLogged >= 365) {
+            Pair(true, averagePerDay * 365)
+        } else {
+            Pair(false, averagePerDay * 365)
+        }
+    }
+    fun getWeeklyAverage(entries: List<SnusEntry>): Pair<Boolean, Float> {
+        if (entries.isEmpty()) return Pair(true, 0f)
+
+        val firstEntryDate = entries.minOfOrNull { it.timestamp } ?: return Pair(true, 0f)
+        val lastEntryDate = entries.maxOfOrNull { it.timestamp } ?: return Pair(true, 0f)
+
+        val daysLogged = (lastEntryDate - firstEntryDate) / (1000 * 60 * 60 * 24) + 1
+        val averagePerDay = entries.size.toFloat() / daysLogged.toFloat()
+
+        return if (daysLogged >= 7) {
+            Pair(true, averagePerDay * 7)
+        } else {
+            Pair(false, averagePerDay * 7)
+        }
+    }
+
+    fun calculateCost(averageConsumption: Float): Double {
+        val packagesUsed = averageConsumption / portionsPerPackage
+        return packagesUsed * averageCostPerPackage
+    }
+
 }

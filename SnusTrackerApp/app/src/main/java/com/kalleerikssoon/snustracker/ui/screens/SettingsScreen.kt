@@ -16,7 +16,6 @@ fun SettingsScreen(viewModel: SnusViewModel, navController: NavHostController) {
     Scaffold(
         bottomBar = { BottomNavigationBar(navController = navController, currentScreen = Screen.Settings) }
     ) { paddingValues ->
-        // You can use the paddingValues if you need to apply padding to your content
         Text(
             text = "Settings Screen",
             style = MaterialTheme.typography.headlineSmall,
