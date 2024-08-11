@@ -3,6 +3,7 @@ package com.kalleerikssoon.snustracker
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.kalleerikssoon.snustracker.database.SnusEntry
 import com.kalleerikssoon.snustracker.database.SnusRepository
@@ -15,11 +16,12 @@ class SnusViewModel(
     private val repository: SnusRepository,
     private val locationHandler: LocationHandler
 ) : AndroidViewModel(application) {
-
+    private val settingsManager = UserSettingsHelper(application)
     val todayEntries: LiveData<List<SnusEntry>> = repository.getEntriesForToday()
 
-    private val averageCostPerPackage = 30.0 // Cost of one snus package in the local currency
-    private val portionsPerPackage = 22 // Average portions per package
+    val costPerPackage: LiveData<Float> = MutableLiveData(settingsManager.costPerPackage)
+    val portionsPerPackage: LiveData<Float> = MutableLiveData(settingsManager.portionsPerPackage)
+
 
     // Function to get snus entries for the current week
     fun getEntriesForWeek(): LiveData<List<SnusEntry>> = repository.getEntriesForWeek()
@@ -113,9 +115,20 @@ class SnusViewModel(
         }
     }
 
-    fun calculateCost(averageConsumption: Float): Double {
-        val packagesUsed = averageConsumption / portionsPerPackage
-        return packagesUsed * averageCostPerPackage
+    fun calculateCost(averageConsumption: Float): Float {
+        val packagesUsed = averageConsumption / portionsPerPackage.value!!
+        return packagesUsed * costPerPackage.value!!
+    }
+
+    // Method to update cost and portions
+    fun updateCostPerPackage(newCost: Int) {
+        settingsManager.costPerPackage = newCost.toFloat()
+        (costPerPackage as MutableLiveData).value = newCost.toFloat()
+    }
+
+    fun updatePortionsPerPackage(newPortions: Int) {
+        settingsManager.portionsPerPackage = newPortions.toFloat()
+        (portionsPerPackage as MutableLiveData).value = newPortions.toFloat()
     }
 
 }

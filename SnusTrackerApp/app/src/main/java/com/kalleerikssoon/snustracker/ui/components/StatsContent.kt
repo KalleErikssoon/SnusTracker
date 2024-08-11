@@ -9,9 +9,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,10 +29,15 @@ import com.kalleerikssoon.snustracker.TimePeriod
 fun StatisticsContent(
     totalSnus: Int,
     averageSnus: Pair<Boolean, Float>,
-    estimatedCost: Double,
+    estimatedCost: Float,
     timePeriod: TimePeriod,
+    portionsPerPackage: Float,
+    onEditCostClick: () -> Unit,
+    onEditPortionClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val estimatedPackages = averageSnus.second / portionsPerPackage
+
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -70,7 +78,7 @@ fun StatisticsContent(
             }
         }
 
-        // Card for Average Snus
+        // Card for Average Snus consumption
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -90,25 +98,41 @@ fun StatisticsContent(
                     tint = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.width(16.dp))
-                Column {
-                    val averageText = if (averageSnus.first) {
-                        "Actual Average"
-                    } else {
-                        "Estimated Average"
-                    }
+
+                // Wrap the text fields and the button in a Row within the Column
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = averageText,
+                        text = if (averageSnus.first) "Actual Consumption $timePeriod" else "Estimated Consumption $timePeriod",
                         style = MaterialTheme.typography.titleMedium
                     )
-                    Text(
-                        text = "${"%.0f".format(averageSnus.second)} portions",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+
+                    // Row containing the portions and packages text fields along with the edit button
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column {
+                            Text(
+                                text = "${"%.0f".format(averageSnus.second)} portions",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = "${"%.2f".format(estimatedPackages)} packages",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+
+                        // Aligns the button to the right side
+                        IconButton(onClick = onEditPortionClick) {
+                            Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit Portions")
+                        }
+                    }
                 }
             }
         }
 
-        // Card for Estimated Cost
+        // Card for Estimated Cost with Edit Button
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -138,9 +162,14 @@ fun StatisticsContent(
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
+                Spacer(modifier = Modifier.weight(1f))
+                IconButton(onClick = onEditCostClick) {
+                    Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit Cost")
+                }
             }
         }
     }
 }
+
 
 

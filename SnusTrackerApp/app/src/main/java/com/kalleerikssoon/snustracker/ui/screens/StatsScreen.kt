@@ -3,9 +3,11 @@ package com.kalleerikssoon.snustracker.ui.screens
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -13,6 +15,8 @@ import com.kalleerikssoon.snustracker.Screen
 import com.kalleerikssoon.snustracker.SnusViewModel
 import com.kalleerikssoon.snustracker.TimePeriod
 import com.kalleerikssoon.snustracker.ui.components.BottomNavigationBar
+import com.kalleerikssoon.snustracker.ui.components.EditCostDialog
+import com.kalleerikssoon.snustracker.ui.components.EditPortionDialog
 import com.kalleerikssoon.snustracker.ui.components.StatisticsContent
 import com.kalleerikssoon.snustracker.ui.components.TimePeriodTabs
 
@@ -49,14 +53,44 @@ fun StatsScreen(viewModel: SnusViewModel, navController: NavHostController) {
 
         // Calculate the estimated cost
         val estimatedCost = viewModel.calculateCost(average.second)
+        var showCostDialog by remember { mutableStateOf(false) }
+        var showPortionDialog by remember { mutableStateOf(false) }
+
+        if (showCostDialog) {
+            EditCostDialog(
+                currentCost = viewModel.costPerPackage.value!!.toInt(),
+                onDismissRequest = { showCostDialog = false },
+                onSaveClick = { newCost ->
+                    viewModel.updateCostPerPackage(newCost)
+                    showCostDialog = false
+                }
+            )
+        }
+
+        if (showPortionDialog) {
+            EditPortionDialog(
+                currentPortions = viewModel.portionsPerPackage.value!!.toInt(),
+                onDismissRequest = { showPortionDialog = false },
+                onSaveClick = { newPortions ->
+                    viewModel.updatePortionsPerPackage(newPortions)
+                    showPortionDialog = false
+                }
+            )
+        }
+
+        val portionsPerPackage = viewModel.portionsPerPackage.value!!
 
         StatisticsContent(
             totalSnus = entries.size,
             averageSnus = average,
             timePeriod = currentPeriod.value,
             estimatedCost = estimatedCost,
+            portionsPerPackage = portionsPerPackage,
+            onEditCostClick = { showCostDialog = true },
+            onEditPortionClick = {showPortionDialog = true},
             modifier = Modifier.padding(paddingValues)
         )
     }
 }
+
 
