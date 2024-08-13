@@ -1,7 +1,8 @@
 package com.kalleerikssoon.snustracker.ui.components
+
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
@@ -31,7 +32,7 @@ fun BottomNavigationBar(
             onClick = { navController.navigate(Screen.MapView.route) }
         )
         NavigationBarItem(
-            icon = { Icon(imageVector = Icons.Default.List, contentDescription = "Statistics") },
+            icon = { Icon(imageVector = Icons.AutoMirrored.Filled.List, contentDescription = "Statistics") },
             label = { Text("Statistics") },
             selected = currentScreen is Screen.Statistics,
             onClick = { navController.navigate(Screen.Statistics.route) }

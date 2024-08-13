@@ -19,6 +19,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        UserSettings.initialize(this)
         setContent {
             SnusTrackerTheme {
                 val navController = rememberNavController() // Initialize NavController

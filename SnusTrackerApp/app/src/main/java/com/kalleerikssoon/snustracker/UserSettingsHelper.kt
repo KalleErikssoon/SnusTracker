@@ -13,4 +13,20 @@ class UserSettingsHelper(context: Context) {
     var portionsPerPackage: Float
         get() = preferences.getFloat("portions_per_package", 20f)
         set(value) = preferences.edit().putFloat("portions_per_package", value).apply()
+    var homeScreenPeriod: String
+        get() = preferences.getString("home_screen_period", "Daily") ?: "Daily"
+        set(value) = preferences.edit().putString("home_screen_period", value).apply()
+}
+object UserSettings {
+    private var instance: UserSettingsHelper? = null
+
+    fun initialize(context: Context) {
+        if (instance == null) {
+            instance = UserSettingsHelper(context)
+        }
+    }
+
+    fun getInstance(): UserSettingsHelper {
+        return instance ?: throw IllegalStateException("UserSettings not initialized")
+    }
 }

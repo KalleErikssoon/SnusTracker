@@ -20,12 +20,54 @@ import com.kalleerikssoon.snustracker.Screen
 import com.kalleerikssoon.snustracker.SnusViewModel
 import com.kalleerikssoon.snustracker.database.SnusEntry
 import com.kalleerikssoon.snustracker.ui.components.BottomNavigationBar
+import com.kalleerikssoon.snustracker.ui.components.HomeScreenAppBar
+
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.kalleerikssoon.snustracker.TimePeriod
+import com.kalleerikssoon.snustracker.UserSettings
+import com.kalleerikssoon.snustracker.ui.components.EditHomeScreenDialog
+import com.kalleerikssoon.snustracker.ui.components.InfoDialog
 
 @Composable
 fun HomeScreen(viewModel: SnusViewModel, navController: NavHostController) {
+    val userSettingsHelper = UserSettings.getInstance()
     val todayEntries by viewModel.todayEntries.observeAsState(emptyList())
+    val showInfoDialog = remember { mutableStateOf(false) }
+    val showEditDialog = remember { mutableStateOf(false) }
+
+    // Load the saved period from SharedPreferences
+    var selectedPeriod by remember { mutableStateOf(userSettingsHelper.homeScreenPeriod) }
+
+    val displayedEntries = when (selectedPeriod) {
+        "Daily" -> todayEntries.size
+        TimePeriod.Weekly.name -> viewModel.getEntriesForWeek().observeAsState(emptyList()).value.size
+        TimePeriod.Monthly.name -> viewModel.getEntriesForMonth().observeAsState(emptyList()).value.size
+        TimePeriod.Yearly.name -> viewModel.getEntriesForYear().observeAsState(emptyList()).value.size
+        TimePeriod.Total.name -> viewModel.getAllEntries().observeAsState(emptyList()).value.size
+        else -> todayEntries.size // Default case
+    }
+
+    if (showEditDialog.value) {
+        EditHomeScreenDialog(
+            currentPeriod = selectedPeriod,
+            onDismiss = { showEditDialog.value = false },
+            onPeriodSelected = { period ->
+                selectedPeriod = period
+                userSettingsHelper.homeScreenPeriod = period // Save the selected period to SharedPreferences
+                showEditDialog.value = false
+            }
+        )
+    }
 
     Scaffold(
+        topBar = {
+            HomeScreenAppBar(
+                onInfoClick = { showInfoDialog.value = true }, // Trigger the dialog
+                onEditClick = { showEditDialog.value = true }
+            )
+        },
         bottomBar = { BottomNavigationBar(navController = navController, currentScreen = Screen.Home) },
         floatingActionButton = {
             Row(
@@ -77,7 +119,7 @@ fun HomeScreen(viewModel: SnusViewModel, navController: NavHostController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Amount of snus today: ${todayEntries.size}",
+                    text = "Amount of snus ${selectedPeriod}: $displayedEntries",
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(bottom = 25.dp)
                 )
@@ -89,6 +131,8 @@ fun HomeScreen(viewModel: SnusViewModel, navController: NavHostController) {
                 )
             }
         }
+
+        // Show the InfoDialog if triggered
+        InfoDialog(showDialog = showInfoDialog)
     }
 }
-

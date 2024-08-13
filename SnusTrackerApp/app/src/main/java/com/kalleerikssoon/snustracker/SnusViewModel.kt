@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.maps.model.LatLng
 import com.kalleerikssoon.snustracker.database.SnusEntry
 import com.kalleerikssoon.snustracker.database.SnusRepository
 import kotlinx.coroutines.Dispatchers
@@ -16,11 +17,14 @@ class SnusViewModel(
     private val repository: SnusRepository,
     private val locationHandler: LocationHandler
 ) : AndroidViewModel(application) {
-    private val settingsManager = UserSettingsHelper(application)
+    private val settingsManager = UserSettings.getInstance()
     val todayEntries: LiveData<List<SnusEntry>> = repository.getEntriesForToday()
 
     val costPerPackage: LiveData<Float> = MutableLiveData(settingsManager.costPerPackage)
     val portionsPerPackage: LiveData<Float> = MutableLiveData(settingsManager.portionsPerPackage)
+
+    private val _currentLocation = MutableLiveData<LatLng>()
+    val currentLocation: LiveData<LatLng> = _currentLocation
 
 
     // Function to get snus entries for the current week
@@ -42,6 +46,11 @@ class SnusViewModel(
         } else {
             locationHandler.requestLocationPermission()
             insert(entry) // Insert with default location if permission is not granted
+        }
+    }
+    fun fetchCurrentLocation() {
+        locationHandler.getCurrentLocation { latitude, longitude ->
+            _currentLocation.postValue(LatLng(latitude, longitude))
         }
     }
 
