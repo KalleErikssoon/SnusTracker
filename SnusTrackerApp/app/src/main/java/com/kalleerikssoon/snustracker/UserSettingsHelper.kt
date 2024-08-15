@@ -16,6 +16,9 @@ class UserSettingsHelper(context: Context) {
     var homeScreenPeriod: String
         get() = preferences.getString("home_screen_period", "Daily") ?: "Daily"
         set(value) = preferences.edit().putString("home_screen_period", value).apply()
+    var darkModeOn: Boolean
+        get() = preferences.getBoolean("dark_mode", false)
+        set(value) = preferences.edit().putBoolean("dark_mode", value).apply()
 }
 object UserSettings {
     private var instance: UserSettingsHelper? = null

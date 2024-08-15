@@ -1,3 +1,5 @@
+package com.kalleerikssoon.snustracker.ui.components
+
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -13,8 +15,8 @@ import com.kalleerikssoon.snustracker.ui.screens.StatsScreen
 fun SetupNavGraph(navController: NavHostController, viewModel: SnusViewModel) {
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(Screen.Home.route) { HomeScreen(viewModel, navController) }
-        composable(Screen.MapView.route) { MapScreen(viewModel, navController) }  // Define this composable
-        composable(Screen.Statistics.route) { StatsScreen(viewModel, navController) }  // Define this composable
-        composable(Screen.Settings.route) { SettingsScreen(viewModel, navController) }  // Define this composable
+        composable(Screen.MapView.route) { MapScreen(viewModel, navController) }
+        composable(Screen.Statistics.route) { StatsScreen(viewModel, navController) }
+        composable(Screen.Settings.route) { SettingsScreen(viewModel, navController) }
     }
 }

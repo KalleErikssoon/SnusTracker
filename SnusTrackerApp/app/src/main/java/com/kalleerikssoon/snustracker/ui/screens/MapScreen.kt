@@ -6,19 +6,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.kalleerikssoon.snustracker.SnusViewModel
 import com.google.maps.android.compose.*
 import com.kalleerikssoon.snustracker.Screen
 import com.kalleerikssoon.snustracker.ui.components.BottomNavigationBar
+import androidx.compose.runtime.getValue
 
 @Composable
 fun MapScreen(viewModel: SnusViewModel, navController: NavHostController) {

@@ -1,11 +1,13 @@
 package com.kalleerikssoon.snustracker
 
-import SetupNavGraph
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
+import com.kalleerikssoon.snustracker.ui.components.SetupNavGraph
 import com.kalleerikssoon.snustracker.ui.theme.SnusTrackerTheme
 
 class MainActivity : ComponentActivity() {
@@ -13,18 +15,22 @@ class MainActivity : ComponentActivity() {
     private val viewModel: SnusViewModel by lazy {
         ViewModelProvider(
             this,
-            SnusViewModelFactory(application, LocationHandler(this)) // Passing both application and LocationHandler
+            SnusViewModelFactory(application, LocationHandler(this))
         )[SnusViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         UserSettings.initialize(this)
-        setContent {
-            SnusTrackerTheme {
-                val navController = rememberNavController() // Initialize NavController
 
-                SetupNavGraph(navController = navController, viewModel = viewModel) // Set up the NavGraph
+        setContent {
+            // Observe the dark mode setting
+            val darkModeEnabled by viewModel.darkModeEnabled.observeAsState(UserSettings.getInstance().darkModeOn)
+
+            SnusTrackerTheme(darkTheme = darkModeEnabled) {
+                val navController = rememberNavController()
+
+                SetupNavGraph(navController = navController, viewModel = viewModel)
             }
         }
     }

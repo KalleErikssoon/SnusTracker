@@ -46,7 +46,7 @@ fun HomeScreen(viewModel: SnusViewModel, navController: NavHostController) {
         TimePeriod.Monthly.name -> viewModel.getEntriesForMonth().observeAsState(emptyList()).value.size
         TimePeriod.Yearly.name -> viewModel.getEntriesForYear().observeAsState(emptyList()).value.size
         TimePeriod.Total.name -> viewModel.getAllEntries().observeAsState(emptyList()).value.size
-        else -> todayEntries.size // Default case
+        else -> todayEntries.size
     }
 
     if (showEditDialog.value) {

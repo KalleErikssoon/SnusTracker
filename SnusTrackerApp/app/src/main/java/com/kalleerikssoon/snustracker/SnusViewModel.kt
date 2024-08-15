@@ -22,6 +22,7 @@ class SnusViewModel(
 
     val costPerPackage: LiveData<Float> = MutableLiveData(settingsManager.costPerPackage)
     val portionsPerPackage: LiveData<Float> = MutableLiveData(settingsManager.portionsPerPackage)
+    val darkModeEnabled: MutableLiveData<Boolean> = MutableLiveData(settingsManager.darkModeOn)
 
     private val _currentLocation = MutableLiveData<LatLng>()
     val currentLocation: LiveData<LatLng> = _currentLocation
@@ -138,6 +139,12 @@ class SnusViewModel(
     fun updatePortionsPerPackage(newPortions: Int) {
         settingsManager.portionsPerPackage = newPortions.toFloat()
         (portionsPerPackage as MutableLiveData).value = newPortions.toFloat()
+    }
+
+
+    fun updateDarkModeEnabled(isEnabled: Boolean) {
+        settingsManager.darkModeOn = isEnabled
+        darkModeEnabled.value = isEnabled
     }
 
 }
