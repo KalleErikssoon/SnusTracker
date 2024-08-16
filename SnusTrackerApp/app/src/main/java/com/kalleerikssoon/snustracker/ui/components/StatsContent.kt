@@ -45,38 +45,40 @@ fun StatisticsContent(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Card for Total Snus
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            elevation = CardDefaults.cardElevation(4.dp)
-        ) {
-            Row(
+        if (timePeriod != TimePeriod.Total) {
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(8.dp),
+                elevation = CardDefaults.cardElevation(4.dp)
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.calendar),
-                    contentDescription = "Your Icon",
-                    modifier = Modifier.size(40.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Column {
-                    Text(
-                        text = "Total Snus $timePeriod",
-                        style = MaterialTheme.typography.titleMedium
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.calendar),
+                        contentDescription = "Your Icon",
+                        modifier = Modifier.size(40.dp),
+                        tint = MaterialTheme.colorScheme.primary
                     )
-                    Text(
-                        text = "$totalSnus portions",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Column {
+                        Text(
+                            text = "Total Snus $timePeriod",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            text = "$totalSnus portions",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
                 }
             }
         }
+
 
         // Card for Average Snus consumption
         Card(

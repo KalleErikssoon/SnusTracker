@@ -4,17 +4,13 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
 
 data class SnusClusterItem(
-    val location: LatLng,
-    val name: String,
-    val description: String?,
-    val imageResourceId: Int? = null,
+    val itemPosition: LatLng,
+    val itemTitle: String,
+    val itemSnippet: String
 ) : ClusterItem {
-    override fun getPosition(): LatLng = location
-
-    override fun getTitle(): String = name
-
-    override fun getSnippet(): String? = description
-
-    override fun getZIndex(): Float = 1f
-
+    override fun getPosition(): LatLng = itemPosition
+    override fun getTitle(): String = itemTitle
+    override fun getSnippet(): String = itemSnippet
+    override fun getZIndex(): Float = 0f
 }
+

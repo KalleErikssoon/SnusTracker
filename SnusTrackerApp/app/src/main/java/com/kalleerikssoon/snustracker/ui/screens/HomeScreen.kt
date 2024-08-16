@@ -119,7 +119,7 @@ fun HomeScreen(viewModel: SnusViewModel, navController: NavHostController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Amount of snus ${selectedPeriod}: $displayedEntries",
+                    text = "Amount Of Snus ${selectedPeriod}: $displayedEntries",
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(bottom = 25.dp)
                 )
@@ -131,8 +131,6 @@ fun HomeScreen(viewModel: SnusViewModel, navController: NavHostController) {
                 )
             }
         }
-
-        // Show the InfoDialog if triggered
         InfoDialog(showDialog = showInfoDialog)
     }
 }
