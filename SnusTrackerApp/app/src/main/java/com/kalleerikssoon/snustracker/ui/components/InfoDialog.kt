@@ -18,6 +18,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 @Composable
 fun InfoDialog(
@@ -34,7 +36,14 @@ fun InfoDialog(
                 )
             },
             text = {
-                Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                val scrollState = rememberScrollState()
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .verticalScroll(scrollState)
+                ) {
                     ScreenInfo(
                         screenName = "Home Screen",
                         description = "Allows you to add/delete snus entries with the buttons on the lower part of the screen, and displays the amount of snus used in different time periods (can be edited with the edit button in the top right corner)."
@@ -47,12 +56,12 @@ fun InfoDialog(
                     Spacer(modifier = Modifier.height(16.dp))
                     ScreenInfo(
                         screenName = "Statistics",
-                        description = "Shows detailed statistics including usage, average/estimated consumption and cost across different time periods."
+                        description = "Shows detailed statistics including usage, average/estimated consumption, and cost across different time periods."
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     ScreenInfo(
                         screenName = "Settings",
-                        description = "Manage your preferences, including dark mode, cost per snus package/portions per package and more."
+                        description = "Manage your preferences, including dark mode, cost per snus package/portions per package, and more."
                     )
                 }
             },
@@ -63,7 +72,7 @@ fun InfoDialog(
                     Text("OK")
                 }
             },
-            modifier = Modifier.fillMaxWidth().padding(16.dp) // Adjust padding as needed
+            modifier = Modifier.fillMaxWidth().padding(16.dp)
         )
     }
 }
@@ -72,14 +81,12 @@ fun InfoDialog(
 fun ScreenInfo(screenName: String, description: String) {
     Text(
         text = buildAnnotatedString {
-            // Apply bold to screen name
             append(
                 AnnotatedString(
                     text = "$screenName\n",
                     spanStyle = SpanStyle(fontWeight = FontWeight.Bold)
                 )
             )
-            // Normal style for description
             append(description)
         },
         style = MaterialTheme.typography.bodyMedium,

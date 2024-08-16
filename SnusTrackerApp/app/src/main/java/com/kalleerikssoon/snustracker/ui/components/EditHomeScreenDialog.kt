@@ -2,6 +2,7 @@ package com.kalleerikssoon.snustracker.ui.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -17,6 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.kalleerikssoon.snustracker.TimePeriod
 
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+
 @Composable
 fun EditHomeScreenDialog(
     currentPeriod: String,
@@ -31,7 +35,12 @@ fun EditHomeScreenDialog(
         onDismissRequest = onDismiss,
         title = { Text("Choose Time Period To Display") },
         text = {
-            Column {
+            val scrollState = rememberScrollState()
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(scrollState)
+            ) {
                 timePeriods.forEach { period ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -60,6 +69,10 @@ fun EditHomeScreenDialog(
             Button(onClick = onDismiss) {
                 Text("Cancel")
             }
-        }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
     )
 }
+

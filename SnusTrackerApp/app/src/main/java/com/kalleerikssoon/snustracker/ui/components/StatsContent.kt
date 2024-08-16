@@ -25,6 +25,9 @@ import androidx.compose.ui.unit.dp
 import com.kalleerikssoon.snustracker.R
 import com.kalleerikssoon.snustracker.TimePeriod
 
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
+
 @Composable
 fun StatisticsContent(
     totalSnus: Int,
@@ -38,12 +41,16 @@ fun StatisticsContent(
 ) {
     val estimatedPackages = averageSnus.second / portionsPerPackage
 
+    // Add a scroll state
+    val scrollState = rememberScrollState()
+
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
+            .verticalScroll(scrollState)  // Make the content scrollable
     ) {
         if (timePeriod != TimePeriod.Total) {
             Card(
@@ -78,7 +85,6 @@ fun StatisticsContent(
                 }
             }
         }
-
 
         // Card for Average Snus consumption
         Card(

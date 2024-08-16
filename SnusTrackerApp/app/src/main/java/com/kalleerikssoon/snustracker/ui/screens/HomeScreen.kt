@@ -1,4 +1,3 @@
-// MainScreen.kt
 package com.kalleerikssoon.snustracker.ui.screens
 
 import androidx.compose.foundation.Image
@@ -21,93 +20,113 @@ import com.kalleerikssoon.snustracker.SnusViewModel
 import com.kalleerikssoon.snustracker.database.SnusEntry
 import com.kalleerikssoon.snustracker.ui.components.BottomNavigationBar
 import com.kalleerikssoon.snustracker.ui.components.HomeScreenAppBar
-
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalConfiguration
 import com.kalleerikssoon.snustracker.TimePeriod
-import com.kalleerikssoon.snustracker.UserSettings
-import com.kalleerikssoon.snustracker.ui.components.EditHomeScreenDialog
 import com.kalleerikssoon.snustracker.ui.components.InfoDialog
 
 @Composable
 fun HomeScreen(viewModel: SnusViewModel, navController: NavHostController) {
-    val userSettingsHelper = UserSettings.getInstance()
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
     val todayEntries by viewModel.todayEntries.observeAsState(emptyList())
     val showInfoDialog = remember { mutableStateOf(false) }
     val showEditDialog = remember { mutableStateOf(false) }
+    val selectedPeriod by remember { mutableStateOf("Daily") }
 
-    // Load the saved period from SharedPreferences
-    var selectedPeriod by remember { mutableStateOf(userSettingsHelper.homeScreenPeriod) }
-
+    // Define the displayed entries based on the selected period
     val displayedEntries = when (selectedPeriod) {
         "Daily" -> todayEntries.size
         TimePeriod.Weekly.name -> viewModel.getEntriesForWeek().observeAsState(emptyList()).value.size
         TimePeriod.Monthly.name -> viewModel.getEntriesForMonth().observeAsState(emptyList()).value.size
         TimePeriod.Yearly.name -> viewModel.getEntriesForYear().observeAsState(emptyList()).value.size
         TimePeriod.Total.name -> viewModel.getAllEntries().observeAsState(emptyList()).value.size
-        else -> todayEntries.size
-    }
-
-    if (showEditDialog.value) {
-        EditHomeScreenDialog(
-            currentPeriod = selectedPeriod,
-            onDismiss = { showEditDialog.value = false },
-            onPeriodSelected = { period ->
-                selectedPeriod = period
-                userSettingsHelper.homeScreenPeriod = period // Save the selected period to SharedPreferences
-                showEditDialog.value = false
-            }
-        )
+        else -> todayEntries.size // Default case
     }
 
     Scaffold(
         topBar = {
             HomeScreenAppBar(
-                onInfoClick = { showInfoDialog.value = true }, // Trigger the dialog
+                onInfoClick = { showInfoDialog.value = true },
                 onEditClick = { showEditDialog.value = true }
             )
         },
         bottomBar = { BottomNavigationBar(navController = navController, currentScreen = Screen.Home) },
         floatingActionButton = {
-            Row(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(25.dp)
-            ) {
-                FloatingActionButton(
-                    onClick = {
-                        if (todayEntries.isNotEmpty()) {
-                            val latestEntry = todayEntries[0]
-                            viewModel.delete(latestEntry)
+            if (isLandscape) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 50.dp),
+                    contentAlignment = Alignment.BottomCenter
+                ) {
+                    Row(
+                        modifier = Modifier.align(Alignment.BottomCenter),
+                        horizontalArrangement = Arrangement.spacedBy(250.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        FloatingActionButton(
+                            onClick = {
+                                if (todayEntries.isNotEmpty()) {
+                                    val latestEntry = todayEntries[0]
+                                    viewModel.delete(latestEntry)
+                                }
+                            }
+                        ) {
+                            Icon(imageVector = Icons.Default.Delete, contentDescription = "Remove Snus")
+                        }
+                        FloatingActionButton(
+                            onClick = {
+                                val currentTime = System.currentTimeMillis()
+                                val newEntry = SnusEntry(
+                                    id = 0,
+                                    timestamp = currentTime,
+                                    latitude = 0.0,
+                                    longitude = 0.0
+                                )
+                                viewModel.insertSnusEntryWithLocation(newEntry)
+                            }
+                        ) {
+                            Icon(imageVector = Icons.Default.Add, contentDescription = "Add Snus")
                         }
                     }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Remove Snus"
-                    )
                 }
-                FloatingActionButton(
-                    onClick = {
-                        val currentTime = System.currentTimeMillis()
-                        val newEntry = SnusEntry(
-                            id = 0,
-                            timestamp = currentTime,
-                            latitude = 0.0,
-                            longitude = 0.0
-                        )
-                        viewModel.insertSnusEntryWithLocation(newEntry)
-                    }
+            } else {
+                // Portrait mode: Center the FABs below the logo
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(25.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add Snus"
-                    )
+                    FloatingActionButton(
+                        onClick = {
+                            if (todayEntries.isNotEmpty()) {
+                                val latestEntry = todayEntries[0]
+                                viewModel.delete(latestEntry)
+                            }
+                        }
+                    ) {
+                        Icon(imageVector = Icons.Default.Delete, contentDescription = "Remove Snus")
+                    }
+                    FloatingActionButton(
+                        onClick = {
+                            val currentTime = System.currentTimeMillis()
+                            val newEntry = SnusEntry(
+                                id = 0,
+                                timestamp = currentTime,
+                                latitude = 0.0,
+                                longitude = 0.0
+                            )
+                            viewModel.insertSnusEntryWithLocation(newEntry)
+                        }
+                    ) {
+                        Icon(imageVector = Icons.Default.Add, contentDescription = "Add Snus")
+                    }
                 }
             }
         },
-        floatingActionButtonPosition = FabPosition.Center
+        floatingActionButtonPosition = if (isLandscape) FabPosition.Center else FabPosition.Center
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -119,7 +138,7 @@ fun HomeScreen(viewModel: SnusViewModel, navController: NavHostController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Amount Of Snus ${selectedPeriod}: $displayedEntries",
+                    text = "Amount of snus ${selectedPeriod}: $displayedEntries",
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(bottom = 25.dp)
                 )
@@ -131,6 +150,7 @@ fun HomeScreen(viewModel: SnusViewModel, navController: NavHostController) {
                 )
             }
         }
+
         InfoDialog(showDialog = showInfoDialog)
     }
 }

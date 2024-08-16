@@ -18,6 +18,9 @@ import com.kalleerikssoon.snustracker.ui.components.EditCostDialog
 import com.kalleerikssoon.snustracker.ui.components.EditHomeScreenDialog
 import com.kalleerikssoon.snustracker.ui.components.EditPortionDialog
 
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
+
 @Composable
 fun SettingsScreen(viewModel: SnusViewModel, navController: NavHostController) {
     val userSettingsHelper = UserSettings.getInstance()
@@ -30,6 +33,9 @@ fun SettingsScreen(viewModel: SnusViewModel, navController: NavHostController) {
     // Load the saved period from SharedPreferences
     var selectedPeriod by remember { mutableStateOf(userSettingsHelper.homeScreenPeriod) }
 
+    // Add a scroll state
+    val scrollState = rememberScrollState()
+
     Scaffold(
         bottomBar = { BottomNavigationBar(navController = navController, currentScreen = Screen.Settings) },
     ) { paddingValues ->
@@ -37,7 +43,8 @@ fun SettingsScreen(viewModel: SnusViewModel, navController: NavHostController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(scrollState),  // Make the content scrollable
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             // Portions Per Package Setting
@@ -125,6 +132,7 @@ fun SettingsScreen(viewModel: SnusViewModel, navController: NavHostController) {
         }
     }
 }
+
 
 @Composable
 fun SettingsItem(
