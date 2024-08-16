@@ -26,7 +26,20 @@ class SnusViewModel(
 
     private val _currentLocation = MutableLiveData<LatLng>()
     val currentLocation: LiveData<LatLng> = _currentLocation
+    private val isLocationTrackingEnabled: MutableLiveData<Boolean> = MutableLiveData(false)
 
+    // Function to toggle location tracking
+    fun toggleLocationTracking(isEnabled: Boolean) {
+        if (isEnabled) {
+            if (locationHandler.hasLocationPermission()) {
+                isLocationTrackingEnabled.value = true
+            } else {
+                locationHandler.requestLocationPermission()
+            }
+        } else {
+            isLocationTrackingEnabled.value = false
+        }
+    }
 
     // Function to get snus entries for the current week
     fun getEntriesForWeek(): LiveData<List<SnusEntry>> = repository.getEntriesForWeek()
@@ -53,6 +66,9 @@ class SnusViewModel(
         locationHandler.getCurrentLocation { latitude, longitude ->
             _currentLocation.postValue(LatLng(latitude, longitude))
         }
+    }
+    fun hasLocationPermission(): Boolean {
+        return locationHandler.hasLocationPermission()
     }
 
     // Internal function to insert the entry into the database

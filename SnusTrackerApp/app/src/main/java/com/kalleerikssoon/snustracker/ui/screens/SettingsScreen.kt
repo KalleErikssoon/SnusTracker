@@ -1,5 +1,6 @@
 package com.kalleerikssoon.snustracker.ui.screens
 
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -17,12 +18,15 @@ import com.kalleerikssoon.snustracker.ui.components.BottomNavigationBar
 import com.kalleerikssoon.snustracker.ui.components.EditCostDialog
 import com.kalleerikssoon.snustracker.ui.components.EditHomeScreenDialog
 import com.kalleerikssoon.snustracker.ui.components.EditPortionDialog
-
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.ui.platform.LocalContext
+import android.provider.Settings
 
 @Composable
 fun SettingsScreen(viewModel: SnusViewModel, navController: NavHostController) {
+
+    val context = LocalContext.current
     val userSettingsHelper = UserSettings.getInstance()
 
     // Manage dialog visibility states
@@ -75,6 +79,19 @@ fun SettingsScreen(viewModel: SnusViewModel, navController: NavHostController) {
                 description = selectedPeriod,
                 control = {
                     Button(onClick = { showEditHomeScreenDialog = true }) {
+                        Text("Edit")
+                    }
+                }
+            )
+            // Open location settings in the users phone
+            SettingsItem(
+                title = "Change Location Service Settings",
+                description = "Location Services",
+                control = {
+                    Button(onClick = {
+                        val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                        context.startActivity(intent)
+                    }) {
                         Text("Edit")
                     }
                 }

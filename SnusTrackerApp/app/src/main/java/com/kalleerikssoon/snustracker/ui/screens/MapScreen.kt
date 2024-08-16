@@ -33,14 +33,24 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.compose.clustering.Clustering
 import com.kalleerikssoon.snustracker.SnusClusterItem
+import android.Manifest
+import android.content.Intent
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker
 
 @OptIn(MapsComposeExperimentalApi::class)
 @Composable
 fun MapScreen(viewModel: SnusViewModel, navController: NavHostController) {
-    val cameraPositionState = rememberCameraPositionState()
 
+    val context = LocalContext.current
+    val cameraPositionState = rememberCameraPositionState()
     val currentLocation by viewModel.currentLocation.observeAsState()
     val snusEntries = viewModel.getAllEntries().observeAsState(emptyList()).value
+    var showPermissionDialog by remember { mutableStateOf(false) }
 
     val snusMarkers = remember(snusEntries) {
         snusEntries.map { entry ->
@@ -59,12 +69,57 @@ fun MapScreen(viewModel: SnusViewModel, navController: NavHostController) {
             )
         }
     }
+    // Launcher for the location permission request
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            viewModel.fetchCurrentLocation()
+        } else {
+            showPermissionDialog = true
+        }
+    }
+
+    // Check location permission on launch
+    LaunchedEffect(Unit) {
+        when {
+            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PermissionChecker.PERMISSION_GRANTED -> {
+                viewModel.fetchCurrentLocation()
+            }
+            else -> {
+                permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+        }
+    }
 
     // Update the camera position when currentLocation is updated
     LaunchedEffect(currentLocation) {
         currentLocation?.let {
             cameraPositionState.position = CameraPosition.fromLatLngZoom(it, 15f)
         }
+    }
+
+    // Show dialog if permission is not granted
+    if (showPermissionDialog) {
+        AlertDialog(
+            onDismissRequest = { showPermissionDialog = false },
+            title = { Text("Location Permission Required") },
+            text = { Text("This screen needs location permission to get your current location and display snus entries") },
+            confirmButton = {
+                Button(onClick = {
+                    val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                    context.startActivity(intent)
+                    showPermissionDialog = false
+                }) {
+                    Text("Go to Settings")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showPermissionDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 
     // Fetch the user's location
