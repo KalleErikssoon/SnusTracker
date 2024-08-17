@@ -12,7 +12,6 @@ import com.kalleerikssoon.snustracker.database.SnusEntry
 import com.kalleerikssoon.snustracker.database.SnusRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * Class responsible for managing the data and business logic of the application,
@@ -35,20 +34,6 @@ class SnusViewModel(
 
     private val _currentLocation = MutableLiveData<LatLng>()
     val currentLocation: LiveData<LatLng> = _currentLocation
-    private val isLocationTrackingEnabled: MutableLiveData<Boolean> = MutableLiveData(false)
-
-    // Function to toggle location tracking
-    fun toggleLocationTracking(isEnabled: Boolean) {
-        if (isEnabled) {
-            if (locationHandler.hasLocationPermission()) {
-                isLocationTrackingEnabled.value = true
-            } else {
-                locationHandler.requestLocationPermission()
-            }
-        } else {
-            isLocationTrackingEnabled.value = false
-        }
-    }
 
     // Function to get snus entries for the current week
     fun getEntriesForWeek(): LiveData<List<SnusEntry>> = repository.getEntriesForWeek()
@@ -82,24 +67,12 @@ class SnusViewModel(
     // Internal function to insert the entry into the database
     fun insert(entry: SnusEntry) = viewModelScope.launch(Dispatchers.IO) {
         repository.insert(entry)
-        withContext(Dispatchers.Main) {
-            logCurrentEntries("After Insert")
-        }
     }
 
     // Function to delete a snus entry from the database
     fun delete(entry: SnusEntry) = viewModelScope.launch(Dispatchers.IO) {
         repository.delete(entry)
-        withContext(Dispatchers.Main) {
-            logCurrentEntries("After Delete")
-        }
-    }
 
-    // Function to log current entries in the database
-    private fun logCurrentEntries(operation: String) {
-        todayEntries.observeForever { entries ->
-            println("$operation - Current Entries: $entries")
-        }
     }
 
     //get monthly average of snus consumed

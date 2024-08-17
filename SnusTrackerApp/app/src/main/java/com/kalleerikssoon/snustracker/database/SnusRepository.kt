@@ -30,11 +30,9 @@ class SnusRepository(private val snusEntryDao: SnusEntryDao) {
     // Function to add a snus entry
     fun insert(entry: SnusEntry) {
         snusEntryDao.insertAll(entry)
-        Log.d("SnusRepository", "Inserted entry: $entry")
     }
     // Function to delete a snus entry
     fun delete(entry: SnusEntry) {
         snusEntryDao.delete(entry)
-        Log.d("SnusRepository", "Deleted entry: $entry")
     }
 }
