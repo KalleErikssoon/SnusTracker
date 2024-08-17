@@ -11,8 +11,15 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import com.kalleerikssoon.snustracker.Screen
+import com.kalleerikssoon.snustracker.utils.Screen
 
+/**
+ * A composable that creates a bottom navigation bar for navigating between different
+ * screens in the app. Each item in the bar has an icon and label, and highlights current screen
+ *
+ * @param navController The NavHostController used for navigating between screens.
+ * @param currentScreen The current screen being displayed, used to highlight what's selected in the navigation bar.
+ */
 @Composable
 fun BottomNavigationBar(
     navController: NavHostController,

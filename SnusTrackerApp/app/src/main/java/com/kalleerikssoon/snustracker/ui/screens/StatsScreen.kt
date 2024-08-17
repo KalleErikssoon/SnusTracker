@@ -11,15 +11,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.kalleerikssoon.snustracker.Screen
-import com.kalleerikssoon.snustracker.SnusViewModel
-import com.kalleerikssoon.snustracker.TimePeriod
+import com.kalleerikssoon.snustracker.utils.Screen
+import com.kalleerikssoon.snustracker.viewmodels.SnusViewModel
+import com.kalleerikssoon.snustracker.utils.TimePeriod
 import com.kalleerikssoon.snustracker.ui.components.BottomNavigationBar
 import com.kalleerikssoon.snustracker.ui.components.EditCostDialog
 import com.kalleerikssoon.snustracker.ui.components.EditPortionDialog
 import com.kalleerikssoon.snustracker.ui.components.StatisticsContent
 import com.kalleerikssoon.snustracker.ui.components.TimePeriodTabs
 
+/**
+ * A composable for the statistics screen of the app.
+ * This screen displays the user's snus consumption statistics, including total consumption,
+ * average consumption, and estimated cost for the selected time period. Users can switch
+ * between different time periods using tabs at the top of the screen.
+ * Includes functionality for editing the cost per package and portions per package via dialogs.
+ *
+ * @param viewModel SnusViewModel that provides data and functions for the Statistics screen.
+ * @param navController NavHostController used for navigation between screens.
+ */
 @Composable
 fun StatsScreen(viewModel: SnusViewModel, navController: NavHostController) {
     val currentPeriod = remember { mutableStateOf(TimePeriod.Weekly) }

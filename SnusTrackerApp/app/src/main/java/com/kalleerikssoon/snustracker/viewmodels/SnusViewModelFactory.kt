@@ -1,9 +1,10 @@
-package com.kalleerikssoon.snustracker
+package com.kalleerikssoon.snustracker.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
+import com.kalleerikssoon.snustracker.utils.LocationHandler
 import com.kalleerikssoon.snustracker.database.SnusDatabase
 import com.kalleerikssoon.snustracker.database.SnusRepository
 

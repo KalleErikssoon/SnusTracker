@@ -11,6 +11,15 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
+/**
+ * Composable that displays a dialog for editing the cost per snus package.
+ * It includes a slider for adjusting the cost within a specified range and buttons to
+ * save or cancel the changes.
+ *
+ * @param currentCost The current cost per package to be displayed initially.
+ * @param onSaveClick Callback to handle saving the cost when the user confirms their choice.
+ * @param onDismissRequest Callback to handle the dismissal of the dialog without saving changes.
+ */
 @Composable
 fun EditCostDialog(
     currentCost: Int,

@@ -15,17 +15,27 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.kalleerikssoon.snustracker.R
-import com.kalleerikssoon.snustracker.Screen
-import com.kalleerikssoon.snustracker.SnusViewModel
+import com.kalleerikssoon.snustracker.utils.Screen
+import com.kalleerikssoon.snustracker.viewmodels.SnusViewModel
 import com.kalleerikssoon.snustracker.database.SnusEntry
 import com.kalleerikssoon.snustracker.ui.components.BottomNavigationBar
 import com.kalleerikssoon.snustracker.ui.components.HomeScreenAppBar
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
-import com.kalleerikssoon.snustracker.TimePeriod
+import com.kalleerikssoon.snustracker.utils.TimePeriod
 import com.kalleerikssoon.snustracker.ui.components.InfoDialog
 
+/**
+ * A composable for the home screen of the app. This screen shows the
+ * amount of snus consumed during a selected time period, buttons for adding or deleting snus entries. The screen layout
+ * adjusts based on the device's orientation, in portrait mode, the FABs
+ * Action Buttons (FABs) are centered below the logo, in landscape mode, the FABs are positioned on either
+ * side of the logo.
+ *
+ * @param viewModel SnusViewModel that provides data and functions for the home screen.
+ * @param navController NavHostController used for navigation between screens.
+ */
 @Composable
 fun HomeScreen(viewModel: SnusViewModel, navController: NavHostController) {
     val configuration = LocalConfiguration.current
@@ -42,7 +52,7 @@ fun HomeScreen(viewModel: SnusViewModel, navController: NavHostController) {
         TimePeriod.Monthly.name -> viewModel.getEntriesForMonth().observeAsState(emptyList()).value.size
         TimePeriod.Yearly.name -> viewModel.getEntriesForYear().observeAsState(emptyList()).value.size
         TimePeriod.Total.name -> viewModel.getAllEntries().observeAsState(emptyList()).value.size
-        else -> todayEntries.size // Default case
+        else -> todayEntries.size
     }
 
     Scaffold(
@@ -93,7 +103,6 @@ fun HomeScreen(viewModel: SnusViewModel, navController: NavHostController) {
                     }
                 }
             } else {
-                // Portrait mode: Center the FABs below the logo
                 Row(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,

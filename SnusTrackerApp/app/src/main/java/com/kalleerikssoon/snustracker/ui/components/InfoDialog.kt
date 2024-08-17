@@ -21,6 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 
+/**
+ * A composable that displays an informational dialog about the app.
+ * Includes details for each screen, organized in a scrollable column,
+ * and has a "OK" button to dismiss the dialog.
+ *
+ * @param showDialog A mutable state that controls whether the dialog is visible.
+ */
 @Composable
 fun InfoDialog(
     showDialog: MutableState<Boolean>
@@ -76,7 +83,13 @@ fun InfoDialog(
         )
     }
 }
-
+/**
+ * A composable that formats information about a specific screen
+ * with the screen name in bold and its description below.
+ *
+ * @param screenName The name of the screen being described.
+ * @param description The description of the screen's functionality.
+ */
 @Composable
 fun ScreenInfo(screenName: String, description: String) {
     Text(

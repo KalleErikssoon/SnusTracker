@@ -1,4 +1,4 @@
-package com.kalleerikssoon.snustracker
+package com.kalleerikssoon.snustracker.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -6,12 +6,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
+import com.kalleerikssoon.snustracker.utils.LocationHandler
+import com.kalleerikssoon.snustracker.utils.UserSettings
 import com.kalleerikssoon.snustracker.database.SnusEntry
 import com.kalleerikssoon.snustracker.database.SnusRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * Class responsible for managing the data and business logic of the application,
+ * It handles data retrieval, insertion, and deletion for the Room database
+ * of snus entries, as well as managing location services and user preferences.
+ * Interacts with the SnusRepository for database operations and the
+ * LocationHandler for handling location-related tasks.
+ */
 class SnusViewModel(
     application: Application,
     private val repository: SnusRepository,
@@ -59,16 +68,15 @@ class SnusViewModel(
             }
         } else {
             locationHandler.requestLocationPermission()
-            insert(entry) // Insert with default location if permission is not granted
+            insert(entry)
         }
     }
+
+    // get users current location
     fun fetchCurrentLocation() {
         locationHandler.getCurrentLocation { latitude, longitude ->
             _currentLocation.postValue(LatLng(latitude, longitude))
         }
-    }
-    fun hasLocationPermission(): Boolean {
-        return locationHandler.hasLocationPermission()
     }
 
     // Internal function to insert the entry into the database
@@ -93,6 +101,8 @@ class SnusViewModel(
             println("$operation - Current Entries: $entries")
         }
     }
+
+    //get monthly average of snus consumed
     fun getMonthlyAverage(entries: List<SnusEntry>): Pair<Boolean, Float> {
         if (entries.isEmpty()) return Pair(true, 0f)
 
@@ -109,7 +119,7 @@ class SnusViewModel(
         }
     }
 
-    //get yearly snus entries
+    //get yearly average snus entries
     fun getYearlyAverage(entries: List<SnusEntry>): Pair<Boolean, Float> {
         if (entries.isEmpty()) return Pair(true, 0f)
 
@@ -125,6 +135,7 @@ class SnusViewModel(
             Pair(false, averagePerDay * 365)
         }
     }
+    // get weekly average snus entries
     fun getWeeklyAverage(entries: List<SnusEntry>): Pair<Boolean, Float> {
         if (entries.isEmpty()) return Pair(true, 0f)
 
@@ -141,23 +152,25 @@ class SnusViewModel(
         }
     }
 
+    // calculate the estimated cost for the amount of snus consumed
     fun calculateCost(averageConsumption: Float): Float {
         val packagesUsed = averageConsumption / portionsPerPackage.value!!
         return packagesUsed * costPerPackage.value!!
     }
 
-    // Method to update cost and portions
+    // function to update cost per package
     fun updateCostPerPackage(newCost: Int) {
         settingsManager.costPerPackage = newCost.toFloat()
         (costPerPackage as MutableLiveData).value = newCost.toFloat()
     }
 
+    // function to update portions per package
     fun updatePortionsPerPackage(newPortions: Int) {
         settingsManager.portionsPerPackage = newPortions.toFloat()
         (portionsPerPackage as MutableLiveData).value = newPortions.toFloat()
     }
 
-
+    // function to update if darkmode is enabled or not
     fun updateDarkModeEnabled(isEnabled: Boolean) {
         settingsManager.darkModeOn = isEnabled
         darkModeEnabled.value = isEnabled

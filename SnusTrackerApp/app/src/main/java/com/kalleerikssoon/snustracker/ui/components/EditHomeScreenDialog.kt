@@ -16,11 +16,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.kalleerikssoon.snustracker.TimePeriod
+import com.kalleerikssoon.snustracker.utils.TimePeriod
 
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 
+/**
+ * Composable that displays a dialog allowing the user to select a time period
+ * to be dislpayed. Contains a list of radio buttons representing different time periods,
+ * and buttons to cancel/confirm the user choices
+ * @param currentPeriod The currently selected time period
+ * @param onPeriodSelected Callback to handle the selected time period when the user confirms their choice.
+ * @param onDismiss Callback to handle the dismissal of the dialog
+ */
 @Composable
 fun EditHomeScreenDialog(
     currentPeriod: String,

@@ -11,9 +11,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import com.kalleerikssoon.snustracker.Screen
-import com.kalleerikssoon.snustracker.SnusViewModel
-import com.kalleerikssoon.snustracker.UserSettings
+import com.kalleerikssoon.snustracker.utils.Screen
+import com.kalleerikssoon.snustracker.viewmodels.SnusViewModel
+import com.kalleerikssoon.snustracker.utils.UserSettings
 import com.kalleerikssoon.snustracker.ui.components.BottomNavigationBar
 import com.kalleerikssoon.snustracker.ui.components.EditCostDialog
 import com.kalleerikssoon.snustracker.ui.components.EditHomeScreenDialog
@@ -23,21 +23,28 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.platform.LocalContext
 import android.provider.Settings
 
+/**
+ * A composable for the settings screen of the app. The screen allows users to change
+ * settings such as portions per package, cost per package, home screen time period displayed, and dark mode preferences.
+ * It also opens the system's location service settings. Dialogs are used to change specific
+ * settings.
+ *
+ * @param viewModel SnusViewModel that provides data and functions for the Settings screen.
+ * @param navController NavHostController used for navigation between screens.
+ */
 @Composable
 fun SettingsScreen(viewModel: SnusViewModel, navController: NavHostController) {
 
     val context = LocalContext.current
     val userSettingsHelper = UserSettings.getInstance()
 
-    // Manage dialog visibility states
     var showEditPortionsDialog by remember { mutableStateOf(false) }
     var showEditCostDialog by remember { mutableStateOf(false) }
     var showEditHomeScreenDialog by remember { mutableStateOf(false) }
 
-    // Load the saved period from SharedPreferences
+
     var selectedPeriod by remember { mutableStateOf(userSettingsHelper.homeScreenPeriod) }
 
-    // Add a scroll state
     val scrollState = rememberScrollState()
 
     Scaffold(
@@ -48,10 +55,9 @@ fun SettingsScreen(viewModel: SnusViewModel, navController: NavHostController) {
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(16.dp)
-                .verticalScroll(scrollState),  // Make the content scrollable
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            // Portions Per Package Setting
             SettingsItem(
                 title = "Portions Per Package",
                 description = "${viewModel.portionsPerPackage.observeAsState(20).value} portions",
@@ -62,7 +68,6 @@ fun SettingsScreen(viewModel: SnusViewModel, navController: NavHostController) {
                 }
             )
 
-            // Cost Per Package Setting
             SettingsItem(
                 title = "Cost Per Package",
                 description = "${viewModel.costPerPackage.observeAsState(30).value} kr",
@@ -73,7 +78,6 @@ fun SettingsScreen(viewModel: SnusViewModel, navController: NavHostController) {
                 }
             )
 
-            // Home Screen Time Period Setting
             SettingsItem(
                 title = "Home Screen Time Period",
                 description = selectedPeriod,
@@ -83,7 +87,7 @@ fun SettingsScreen(viewModel: SnusViewModel, navController: NavHostController) {
                     }
                 }
             )
-            // Open location settings in the users phone
+
             SettingsItem(
                 title = "Change Location Service Settings",
                 description = "Location Services",
@@ -97,7 +101,6 @@ fun SettingsScreen(viewModel: SnusViewModel, navController: NavHostController) {
                 }
             )
 
-            // Dark/Light Mode
             val darkModeEnabled by viewModel.darkModeEnabled.observeAsState(false)
             SettingsItem(
                 title = "Dark Mode",
@@ -113,7 +116,6 @@ fun SettingsScreen(viewModel: SnusViewModel, navController: NavHostController) {
             )
         }
 
-        // Show Dialogs
         if (showEditPortionsDialog) {
             EditPortionDialog(
                 currentPortions = viewModel.portionsPerPackage.observeAsState(20).value.toInt(),
@@ -141,7 +143,7 @@ fun SettingsScreen(viewModel: SnusViewModel, navController: NavHostController) {
                 currentPeriod = selectedPeriod,
                 onPeriodSelected = { newPeriod ->
                     selectedPeriod = newPeriod
-                    userSettingsHelper.homeScreenPeriod = newPeriod // Save the selected period to SharedPreferences
+                    userSettingsHelper.homeScreenPeriod = newPeriod
                     showEditHomeScreenDialog = false
                 },
                 onDismiss = { showEditHomeScreenDialog = false }

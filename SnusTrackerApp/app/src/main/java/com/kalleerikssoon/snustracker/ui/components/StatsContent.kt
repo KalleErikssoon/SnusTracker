@@ -23,11 +23,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.kalleerikssoon.snustracker.R
-import com.kalleerikssoon.snustracker.TimePeriod
+import com.kalleerikssoon.snustracker.utils.TimePeriod
 
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 
+/**
+ * A composable that displays statistics for snus consumption,
+ * includes total snus usage, average consumption, and estimated cost over different time period.
+ * The content is organized within scrollable cards, with edit options for portions per package
+ * and cost per package.
+ *
+ * @param totalSnus The total number of snus portions consumed.
+ * @param averageSnus A pair representing whether the average is actual or estimated, and the average consumption.
+ * @param estimatedCost The estimated cost based on consumption and cost per package.
+ * @param timePeriod The time period for the statistics displayed.
+ * @param portionsPerPackage The number of portions per snus package.
+ * @param onEditCostClick Callback function to handle editing the cost per package.
+ * @param onEditPortionClick Callback function to handle editing the portions per package.
+ * @param modifier The modifier to be applied to the layout.
+ */
 @Composable
 fun StatisticsContent(
     totalSnus: Int,
@@ -40,8 +55,6 @@ fun StatisticsContent(
     modifier: Modifier = Modifier,
 ) {
     val estimatedPackages = averageSnus.second / portionsPerPackage
-
-    // Add a scroll state
     val scrollState = rememberScrollState()
 
     Column(
@@ -50,7 +63,7 @@ fun StatisticsContent(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(scrollState)  // Make the content scrollable
+            .verticalScroll(scrollState)
     ) {
         if (timePeriod != TimePeriod.Total) {
             Card(
@@ -86,7 +99,6 @@ fun StatisticsContent(
             }
         }
 
-        // Card for Average Snus consumption
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -107,14 +119,12 @@ fun StatisticsContent(
                 )
                 Spacer(modifier = Modifier.width(16.dp))
 
-                // Wrap the text fields and the button in a Row within the Column
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = if (averageSnus.first) "Actual Consumption $timePeriod" else "Estimated Consumption $timePeriod",
                         style = MaterialTheme.typography.titleMedium
                     )
 
-                    // Row containing the portions and packages text fields along with the edit button
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -131,7 +141,6 @@ fun StatisticsContent(
                             )
                         }
 
-                        // Aligns the button to the right side
                         IconButton(onClick = onEditPortionClick) {
                             Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit Portions")
                         }
@@ -140,7 +149,6 @@ fun StatisticsContent(
             }
         }
 
-        // Card for Estimated Cost with Edit Button
         Card(
             modifier = Modifier
                 .fillMaxWidth()

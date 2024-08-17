@@ -1,8 +1,18 @@
-package com.kalleerikssoon.snustracker
+package com.kalleerikssoon.snustracker.utils
 
 import android.content.Context
 import android.content.SharedPreferences
 
+/**
+ * class that provides an interface for accessing and modifying user settings
+ * stored in SharedPreferences. Handles settings like cost per package, portions per package,
+ * home screen period, and dark mode preference.
+ *
+ * @property costPerPackage cost per package of snus, stored as a Float.
+ * @property portionsPerPackage number of portions per package, stored as a Float.
+ * @property homeScreenPeriod selected time period for the home screen, stored as a String.
+ * @property darkModeOn Boolean indicating whether dark mode is enabled.
+ */
 class UserSettingsHelper(context: Context) {
     private val preferences: SharedPreferences = context.getSharedPreferences("user_settings", Context.MODE_PRIVATE)
 
@@ -20,6 +30,12 @@ class UserSettingsHelper(context: Context) {
         get() = preferences.getBoolean("dark_mode", false)
         set(value) = preferences.edit().putBoolean("dark_mode", value).apply()
 }
+
+/**
+ * Singleton object that provides access to the UserSettingsHelper.
+ * Ensures that UserSettingsHelper is only initialized once and provides a way to access
+ * the instance from anywhere in the app.
+ */
 object UserSettings {
     private var instance: UserSettingsHelper? = null
 

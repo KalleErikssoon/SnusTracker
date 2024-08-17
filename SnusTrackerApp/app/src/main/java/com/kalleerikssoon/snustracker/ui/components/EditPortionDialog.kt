@@ -15,6 +15,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/**
+ * Composable that displays a dialog for editing the amount of snus portions per package.
+ * It includes a slider for adjusting the amount within a specified range and buttons to
+ * save or cancel the changes.
+ *
+ * @param currentCost The current amount of portions per package to be displayed initially.
+ * @param onSaveClick Callback to handle saving the new amount of portions when the user confirms their choice.
+ * @param onDismissRequest Callback to handle the dismissal of the dialog without saving changes.
+ */
 @Composable
 fun EditPortionDialog(
     currentPortions: Int,

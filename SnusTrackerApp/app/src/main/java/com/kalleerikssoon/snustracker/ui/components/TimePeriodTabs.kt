@@ -7,8 +7,16 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.kalleerikssoon.snustracker.TimePeriod
+import com.kalleerikssoon.snustracker.utils.TimePeriod
 
+/**
+ * A composable that displays tabs for switching between different time periods.
+ * The selected period is highlighted, clicking on a tab triggers a callback to handle the selection.
+ *
+ * @param currentPeriod The currently selected time period.
+ * @param onPeriodSelected Callback function to handle the selected time period when the user clicks a tab.
+ * @param modifier Modifier to be applied to the TabRow.
+ */
 @Composable
 fun TimePeriodTabs(
     currentPeriod: TimePeriod,

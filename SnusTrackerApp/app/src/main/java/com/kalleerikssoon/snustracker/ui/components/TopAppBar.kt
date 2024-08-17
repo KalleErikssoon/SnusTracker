@@ -10,6 +10,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 
+/**
+ * A composable for the top app bar for the home screen.
+ * The app bar includes a title and two action buttons for displaying information about the app
+ * and for editing the displayed time period.
+ *
+ * @param onInfoClick Callback function to handle the click the info icon.
+ * @param onEditClick Callback function to handle clicking the edit icon.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenAppBar(

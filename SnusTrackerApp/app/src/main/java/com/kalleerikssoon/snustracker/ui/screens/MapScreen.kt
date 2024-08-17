@@ -17,9 +17,9 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.kalleerikssoon.snustracker.SnusViewModel
+import com.kalleerikssoon.snustracker.viewmodels.SnusViewModel
 import com.google.maps.android.compose.*
-import com.kalleerikssoon.snustracker.Screen
+import com.kalleerikssoon.snustracker.utils.Screen
 import com.kalleerikssoon.snustracker.ui.components.BottomNavigationBar
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +32,7 @@ import androidx.compose.ui.text.withStyle
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.compose.clustering.Clustering
-import com.kalleerikssoon.snustracker.SnusClusterItem
+import com.kalleerikssoon.snustracker.utils.SnusClusterItem
 import android.Manifest
 import android.content.Intent
 import android.provider.Settings
@@ -41,7 +41,16 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
-
+/**
+ * A composable for the map screen of the app. This screen displays a map with snus
+ * entries clustered based on their geographical proximity. The user's current location is obtained and used to
+ * center the map, if location permissions are granted. If the location permission is denied, a dialog
+ * prompts the user to enable it in the system settings. When a cluster is clicked, detailed information about the
+ * cluster's snus entries is displayed in a dialog.
+ *
+ * @param viewModel The SnusViewModel that provides data and functions for the Map screen.
+ * @param navController The NavHostController used for navigation between screens.
+ */
 @OptIn(MapsComposeExperimentalApi::class)
 @Composable
 fun MapScreen(viewModel: SnusViewModel, navController: NavHostController) {
@@ -69,7 +78,7 @@ fun MapScreen(viewModel: SnusViewModel, navController: NavHostController) {
             )
         }
     }
-    // Launcher for the location permission request
+
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
@@ -122,12 +131,10 @@ fun MapScreen(viewModel: SnusViewModel, navController: NavHostController) {
         )
     }
 
-    // Fetch the user's location
     LaunchedEffect(Unit) {
         viewModel.fetchCurrentLocation()
     }
 
-    // State to manage the dialog
     var showClusterDialog by remember { mutableStateOf(false) }
     var clusterInfo by remember { mutableStateOf<Cluster<SnusClusterItem>?>(null) }
 
@@ -160,7 +167,6 @@ fun MapScreen(viewModel: SnusViewModel, navController: NavHostController) {
         }
     }
 
-    // Composable to display the cluster information
     if (showClusterDialog && clusterInfo != null) {
         val snusCount = clusterInfo!!.size
         val firstUsage = clusterInfo!!.items.minByOrNull { it.itemSnippet }?.itemSnippet ?: ""

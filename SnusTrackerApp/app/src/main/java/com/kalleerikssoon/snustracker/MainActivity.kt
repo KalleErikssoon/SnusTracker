@@ -9,6 +9,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
 import com.kalleerikssoon.snustracker.ui.components.SetupNavGraph
 import com.kalleerikssoon.snustracker.ui.theme.SnusTrackerTheme
+import com.kalleerikssoon.snustracker.utils.LocationHandler
+import com.kalleerikssoon.snustracker.utils.UserSettings
+import com.kalleerikssoon.snustracker.viewmodels.SnusViewModel
+import com.kalleerikssoon.snustracker.viewmodels.SnusViewModelFactory
 
 class MainActivity : ComponentActivity() {
 
@@ -24,7 +28,6 @@ class MainActivity : ComponentActivity() {
         UserSettings.initialize(this)
 
         setContent {
-            // Observe the dark mode setting
             val darkModeEnabled by viewModel.darkModeEnabled.observeAsState(UserSettings.getInstance().darkModeOn)
 
             SnusTrackerTheme(darkTheme = darkModeEnabled) {

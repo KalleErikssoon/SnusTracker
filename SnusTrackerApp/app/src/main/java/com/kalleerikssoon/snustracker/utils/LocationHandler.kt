@@ -1,4 +1,4 @@
-package com.kalleerikssoon.snustracker
+package com.kalleerikssoon.snustracker.utils
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -9,18 +9,28 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.CancellationTokenSource
-
+/**
+ * Utility class responsible for managing location-related tasks in the app.
+ * handles location permission checks, requests, and retrieves the current location using the
+ * FusedLocationProviderClient. Communicates with the Android system to ensure that location
+ * services are enabled and retrieves the user's location data.
+ *
+ * @property activity activity context required to access system services and request permissions.
+ */
 class LocationHandler(private val activity: Activity) {
 
     private val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(activity)
 
+    // Function to check if location permission is granted
     fun hasLocationPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
             activity, android.Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
     }
 
+
+    // Function to request location permissions from the user
     fun requestLocationPermission() {
         ActivityCompat.requestPermissions(
             activity,
@@ -29,6 +39,7 @@ class LocationHandler(private val activity: Activity) {
         )
     }
 
+    // Function to retrieve the current location if permission is granted
     @SuppressLint("MissingPermission")
     fun getCurrentLocation(onLocationReceived: (Double, Double) -> Unit) {
         if (hasLocationPermission()) {
