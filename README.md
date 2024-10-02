@@ -5,6 +5,7 @@ SnusTracker is an Android application designed to help users monitor and manage 
 ### Features
 * Log Snus Consumption: Easily log every time you consume a snus with just a tap.
 * Geolocation Tracking: Utilize the GPS sensor to record the locations where you consume snus, helping you identify patterns and where you snus the most.
+* Map View of Your Consumption: Using Google Maps API and location tracking you can see in which areas you snus the most with clusters of how many snus you've had in each location
 * Statistics: View statistics on your snus consumption over different time frames, including daily, weekly, monthly and yearly reports.
 
 ### Action Bar Features
@@ -20,3 +21,5 @@ Kotlin
 GPS permissions enabled on your device
 
 SnusTracker is an application for mindful snus consumption. Track, analyze, and understand your snus habits better.
+
+### Screens
