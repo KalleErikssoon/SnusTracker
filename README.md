@@ -16,10 +16,26 @@ SnusTracker is an Android application designed to help users monitor and manage 
 * Settings: Adjust your preferences and settings within the app.
 
 ### Requirements
-Android Studio
-Kotlin
-GPS permissions enabled on your device
+Android Studio</br>
+Kotlin</br>
+GPS permissions enabled on your device</br>
+[Google Maps API key for Android](https://developers.google.com/maps/documentation/android-sdk/overview)
 
-SnusTracker is an application for mindful snus consumption. Track, analyze, and understand your snus habits better.
+### App Screens
+#### Home Screen
+<div style="display: flex; justify-content: space-between;">
+  <img src="https://i.imgur.com/aECR4wV.png" alt="Home Screen Light Mode" width="45%" />
+  <img src="https://i.imgur.com/Pu1etCU.png" alt="Home Screen Dark Mode" width="45%" />
+</div>
 
-### Screens
+#### Map Screen
+<img src="https://i.imgur.com/Pu1etCU.png" alt="Map Screen" width="45%" />
+
+#### Statistics Screen
+<div style="display: flex; justify-content: space-between;">
+  <img src="https://i.imgur.com/ZG1nFkC.png" alt="Stats Screen Dark Mode" width="45%" />
+  <img src="https://i.imgur.com/WSKqqY8.png" alt="Stats Screen Light Mode" width="45%" />
+</div>
+
+#### Settings Screen
+<img src="https://i.imgur.com/it8ANKu.png" alt="Settings Screen Light Mode" width="45%" />
